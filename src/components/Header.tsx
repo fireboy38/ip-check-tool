@@ -36,7 +36,7 @@ export default function Header({ theme, toggleTheme, activeTab, setActiveTab }: 
               <Shield className={`w-6 h-6 ${isDark ? 'text-blue-400' : 'text-blue-600'}`} />
             </div>
             <span className={`text-xl font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent`}>
-              scxs.vip
+              IP.SCXS.VIP
             </span>
           </motion.div>
 
