@@ -6,11 +6,5 @@ dist
 .microcompact
 .plan
 skills
-*.md
 npm-debug.log
 .gitignore
-.dockerignore
-webpack.config.js
-tsconfig.json
-tailwind.config.js
-postcss.config.js
