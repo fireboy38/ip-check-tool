@@ -26,11 +26,11 @@ interface DNSResolverInfo {
 
 const DNS_RESOLVERS: DNSResolverInfo[] = [
   { name: 'Cloudflare', ip: '1.1.1.1', dohUrl: 'https://cloudflare-dns.com/dns-query', location: '美国', type: 'Public', features: ['DoH', 'DoT', 'DNSSEC'], color: 'from-orange-500 to-yellow-400' },
-  { name: 'Google', ip: '8.8.8.8', dohUrl: 'https://dns.google/dns-query', location: '美国', type: 'Public', features: ['DoH', 'DoT', 'ECS'], color: 'from-blue-500 to-green-400' },
-  { name: '阿里 DNS', ip: '223.5.5.5', dohUrl: 'https://dns.alidns.com/dns-query', location: '中国', type: 'Public', features: ['DoH', 'DoT', 'ECS'], color: 'from-orange-500 to-red-400' },
-  { name: '腾讯 DNS', ip: '119.29.29.29', dohUrl: 'https://doh.pub/dns-query', location: '中国', type: 'Public', features: ['DoH', 'ECS'], color: 'from-blue-500 to-cyan-400' },
-  { name: 'Quad9', ip: '9.9.9.9', dohUrl: 'https://dns.quad9.net/dns-query', location: '瑞士', type: 'Security', features: ['DoH', 'DoT', 'Malware'], color: 'from-blue-800 to-blue-500' },
-  { name: 'OpenDNS', ip: '208.67.222.222', dohUrl: 'https://doh.opendns.com/dns-query', location: '美国', type: 'Public', features: ['DoH', 'Filtering'], color: 'from-purple-500 to-pink-400' },
+  { name: 'Google', ip: '8.8.8.8', dohUrl: 'https://dns.google/resolve', location: '美国', type: 'Public', features: ['DoH', 'DoT', 'ECS'], color: 'from-blue-500 to-green-400' },
+  { name: '阿里 DNS', ip: '223.5.5.5', dohUrl: 'https://dns.alidns.com/resolve', location: '中国', type: 'Public', features: ['DoH', 'DoT', 'ECS'], color: 'from-orange-500 to-red-400' },
+  { name: '腾讯 DNSPod', ip: '119.29.29.29', dohUrl: 'https://sm2.doh.pub/dns-query', location: '中国', type: 'Public', features: ['DoH', 'ECS'], color: 'from-blue-500 to-cyan-400' },
+  { name: 'dns.sb', ip: '185.222.222.222', dohUrl: 'https://doh.dns.sb/dns-query', location: '瑞士', type: 'Public', features: ['DoH', 'DoT', 'DNSSEC'], color: 'from-teal-500 to-emerald-400' },
+  { name: 'Cloudflare IPv6', ip: '1.0.0.1', dohUrl: 'https://1.1.1.1/dns-query', location: '美国', type: 'Public', features: ['DoH', 'DoT', 'ECS'], color: 'from-purple-500 to-pink-400' },
 ];
 
 // 测试域名（覆盖国内外常见服务）
