@@ -19,6 +19,8 @@ const websites = [
   { name: 'YouTube', icon: 'https://www.youtube.com/favicon.ico', url: 'https://www.youtube.com' },
   { name: 'GitHub', icon: 'https://github.com/favicon.ico', url: 'https://github.com' },
   { name: 'ChatGPT', icon: 'https://chat.openai.com/favicon.ico', url: 'https://chat.openai.com' },
+  { name: '淘宝', icon: 'https://www.taobao.com/favicon.ico', url: 'https://www.taobao.com' },
+  { name: '腾讯', icon: 'https://www.qq.com/favicon.ico', url: 'https://www.qq.com' },
 ];
 
 export function PingTest() {

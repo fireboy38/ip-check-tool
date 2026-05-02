@@ -19,6 +19,7 @@ const sites = [
   { name: '百度', icon: 'https://www.baidu.com/favicon.ico', url: 'https://www.baidu.com' },
   { name: '微信', icon: 'https://weixin.qq.com/favicon.ico', url: 'https://weixin.qq.com' },
   { name: '淘宝', icon: 'https://www.taobao.com/favicon.ico', url: 'https://www.taobao.com' },
+  { name: '腾讯', icon: 'https://www.qq.com/favicon.ico', url: 'https://www.qq.com' },
 ];
 
 export default function ConnectivityPage() {

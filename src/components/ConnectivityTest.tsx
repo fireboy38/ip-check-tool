@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Globe, CheckCircle, XCircle, Loader2, Search, Video, GitBranch, MessageSquare, CloudRain, Landmark } from 'lucide-react';
+import { Globe, CheckCircle, XCircle, Loader2, Search, Video, GitBranch, MessageSquare, CloudRain, Landmark, ShoppingBag, MessageCircle } from 'lucide-react';
 
 interface SiteResult {
   name: string;
@@ -18,6 +18,8 @@ const sites: SiteResult[] = [
   { name: 'ChatGPT', icon: '', fallbackIcon: <MessageSquare className="w-5 h-5" />, url: 'https://chatgpt.com' },
   { name: 'Cloudflare', icon: '', fallbackIcon: <CloudRain className="w-5 h-5" />, url: 'https://www.cloudflare.com' },
   { name: '百度', icon: '', fallbackIcon: <Landmark className="w-5 h-5" />, url: 'https://www.baidu.com' },
+  { name: '淘宝', icon: '', fallbackIcon: <ShoppingBag className="w-5 h-5" />, url: 'https://www.taobao.com' },
+  { name: '腾讯', icon: '', fallbackIcon: <MessageCircle className="w-5 h-5" />, url: 'https://www.qq.com' },
 ];
 
 export default function ConnectivityTest() {
