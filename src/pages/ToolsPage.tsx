@@ -232,7 +232,7 @@ function DNSLookup() {
   const [domain, setDomain] = useState('');
   const [loading, setLoading] = useState(false);
   const [records, setRecords] = useState<any[]>([]);
-  const [copied, setCopied] = useState(false);
+  const [copied, setCopied] = useState<string | null>(null);
 
   const lookup = async () => {
     if (!domain) return;
@@ -249,10 +249,10 @@ function DNSLookup() {
     setLoading(false);
   };
 
-  const copyToClipboard = (text: string) => {
+  const copyToClipboard = (text: string, id: string) => {
     copyText(text);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    setCopied(id);
+    setTimeout(() => setCopied(null), 2000);
   };
 
   const getTypeColor = (type: string) => {
@@ -314,10 +314,10 @@ function DNSLookup() {
                 )}
                 <span className="text-xs text-slate-500">TTL: {record.ttl}</span>
                 <button
-                  onClick={() => copyToClipboard(record.value)}
+                  onClick={() => copyToClipboard(record.value, `dns-${i}`)}
                   className="p-1.5 rounded-lg hover:bg-slate-700/50 transition-colors"
                 >
-                  {copied ? <Check className="w-4 h-4 text-green-400" /> : <Copy className="w-4 h-4 text-slate-400" />}
+                  {copied === `dns-${i}` ? <Check className="w-4 h-4 text-green-400" /> : <Copy className="w-4 h-4 text-slate-400" />}
                 </button>
               </div>
             </motion.div>
