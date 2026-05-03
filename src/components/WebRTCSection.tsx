@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Shield, AlertTriangle, CheckCircle, XCircle, RefreshCw, Wifi, Lock, Unlock, Eye, EyeOff, Radio, Globe, Server, Copy, Check, Monitor, Layers, Terminal } from 'lucide-react';
+import { copyToClipboard } from '../utils/clipboard';
 
 // ICE candidate 类型
 interface ICECandidate {
@@ -50,8 +51,8 @@ export default function WebRTCSection() {
     { name: 'Mozilla', url: 'stun:stun.services.mozilla.com' },
   ];
 
-  const copyToClipboard = (text: string, id: string) => {
-    navigator.clipboard.writeText(text);
+  const copyToClipboardHandler = (text: string, id: string) => {
+    copyToClipboard(text);
     setCopied(id);
     setTimeout(() => setCopied(null), 2000);
   };
@@ -303,7 +304,7 @@ export default function WebRTCSection() {
                     <div key={i} className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-700/50 rounded-lg">
                       <span className="w-1.5 h-1.5 rounded-full bg-blue-400" />
                       <code className="text-blue-400 font-mono text-sm">{ip}</code>
-                      <button onClick={() => copyToClipboard(ip, `local-${i}`)} className="p-0.5 hover:bg-slate-600/50 rounded">
+                      <button onClick={() => copyToClipboardHandler(ip, `local-${i}`)} className="p-0.5 hover:bg-slate-600/50 rounded">
                         {copied === `local-${i}` ? <Check className="w-3 h-3 text-green-400" /> : <Copy className="w-3 h-3 text-slate-500" />}
                       </button>
                     </div>
@@ -326,7 +327,7 @@ export default function WebRTCSection() {
                     <div key={i} className="flex items-center gap-1.5 px-3 py-1.5 bg-red-500/10 rounded-lg border border-red-500/20">
                       <span className="w-1.5 h-1.5 rounded-full bg-red-400 animate-pulse" />
                       <code className="text-red-400 font-mono text-sm">{ip}</code>
-                      <button onClick={() => copyToClipboard(ip, `public-${i}`)} className="p-0.5 hover:bg-slate-600/50 rounded">
+                      <button onClick={() => copyToClipboardHandler(ip, `public-${i}`)} className="p-0.5 hover:bg-slate-600/50 rounded">
                         {copied === `public-${i}` ? <Check className="w-3 h-3 text-green-400" /> : <Copy className="w-3 h-3 text-slate-500" />}
                       </button>
                     </div>
@@ -436,7 +437,7 @@ export default function WebRTCSection() {
                           {c.relatedAddress && (
                             <span className="text-xs text-slate-500">via {c.relatedAddress}:{c.relatedPort}</span>
                           )}
-                          <button onClick={() => copyToClipboard(c.ip, `cand-${type}-${i}`)} className="p-1 rounded hover:bg-slate-700/50 transition-colors">
+                          <button onClick={() => copyToClipboardHandler(c.ip, `cand-${type}-${i}`)} className="p-1 rounded hover:bg-slate-700/50 transition-colors">
                             {copied === `cand-${type}-${i}` ? <Check className="w-3.5 h-3.5 text-green-400" /> : <Copy className="w-3.5 h-3.5 text-slate-500" />}
                           </button>
                         </div>
@@ -479,7 +480,7 @@ export default function WebRTCSection() {
                       </pre>
                       <div className="px-4 py-2 border-t border-slate-700/30">
                         <button
-                          onClick={() => copyToClipboard(sdpLog, 'sdp')}
+                          onClick={() => copyToClipboardHandler(sdpLog, 'sdp')}
                           className="flex items-center gap-2 text-xs text-slate-400 hover:text-white transition-colors"
                         >
                           {copied === 'sdp' ? <Check className="w-3 h-3 text-green-400" /> : <Copy className="w-3 h-3" />}

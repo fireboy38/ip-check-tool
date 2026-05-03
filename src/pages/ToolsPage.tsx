@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Globe, Activity, Server, MapPin, Clock, Shield, Search, Route, Lock, Unlock, X, Zap, Network, Terminal, ChevronRight, Copy, Check, Fingerprint, Monitor, Cpu, Wifi, Layers, RefreshCw } from 'lucide-react';
 import GlobalLatency from '../components/GlobalLatency';
+import { copyToClipboard as copyText } from '../utils/clipboard';
 
 interface Tool {
   id: string;
@@ -249,7 +250,7 @@ function DNSLookup() {
   };
 
   const copyToClipboard = (text: string) => {
-    navigator.clipboard.writeText(text);
+    copyText(text);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
@@ -443,7 +444,7 @@ function WhoisLookup() {
   };
 
   const copyToClipboard = (text: string) => {
-    navigator.clipboard.writeText(text);
+    copyText(text);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
@@ -526,7 +527,7 @@ function BrowserInfo() {
   const [copied, setCopied] = useState<string | null>(null);
 
   const copyToClipboard = (text: string, id: string) => {
-    navigator.clipboard.writeText(text);
+    copyText(text);
     setCopied(id);
     setTimeout(() => setCopied(null), 2000);
   };

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Shield, AlertTriangle, CheckCircle, XCircle, RefreshCw, Globe, Server, MapPin, Clock, Zap, Lock, Unlock, Copy, Check, Terminal, ArrowRight } from 'lucide-react';
+import { copyToClipboard } from '../utils/clipboard';
 
 // DNS 查询结果
 interface DNSQueryResult {
@@ -65,8 +66,8 @@ export default function DNSSection() {
   const [compareLoading, setCompareLoading] = useState(false);
   const [currentResolver, setCurrentResolver] = useState('检测中...');
 
-  const copyToClipboard = (text: string, id: string) => {
-    navigator.clipboard.writeText(text);
+  const copyToClipboardHandler = (text: string, id: string) => {
+    copyToClipboard(text);
     setCopied(id);
     setTimeout(() => setCopied(null), 2000);
   };
@@ -335,7 +336,7 @@ export default function DNSSection() {
                               <span className="text-xs px-1.5 py-0.5 rounded bg-blue-500/20 text-blue-400 font-medium">A</span>
                               <code className="text-cyan-400 font-mono text-xs">{rec.data}</code>
                               <span className="text-slate-600 text-xs">TTL {rec.ttl}</span>
-                              <button onClick={() => copyToClipboard(rec.data, `dns-${i}-${j}`)} className="p-0.5 hover:bg-slate-600/50 rounded">
+                              <button onClick={() => copyToClipboardHandler(rec.data, `dns-${i}-${j}`)} className="p-0.5 hover:bg-slate-600/50 rounded">
                                 {copied === `dns-${i}-${j}` ? <Check className="w-3 h-3 text-green-400" /> : <Copy className="w-3 h-3 text-slate-500" />}
                               </button>
                             </div>
@@ -470,7 +471,7 @@ export default function DNSSection() {
                   </div>
                   <div className="flex items-center gap-2">
                     <code className="text-cyan-400 font-mono text-sm">{resolver.ip}</code>
-                    <button onClick={() => copyToClipboard(resolver.ip, `srv-${resolver.ip}`)} className="p-1 rounded hover:bg-slate-700/50">
+                    <button onClick={() => copyToClipboardHandler(resolver.ip, `srv-${resolver.ip}`)} className="p-1 rounded hover:bg-slate-700/50">
                       {copied === `srv-${resolver.ip}` ? <Check className="w-3.5 h-3.5 text-green-400" /> : <Copy className="w-3.5 h-3.5 text-slate-500" />}
                     </button>
                   </div>

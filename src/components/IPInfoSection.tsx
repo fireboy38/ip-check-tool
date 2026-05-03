@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { MapPin, Globe, Server, Shield, RefreshCw, Copy, Check, ExternalLink } from 'lucide-react';
+import { copyToClipboard } from '../utils/clipboard';
 
 interface IPSourceResult {
   id: string;
@@ -476,8 +477,8 @@ export default function IPInfoSection() {
     loadAllIPs();
   }, []);
 
-  const copyToClipboard = (text: string, id: string) => {
-    navigator.clipboard.writeText(text);
+  const copyToClipboardHandler = (text: string, id: string) => {
+    copyToClipboard(text);
     setCopied(id);
     setTimeout(() => setCopied(null), 2000);
   };
@@ -532,7 +533,7 @@ export default function IPInfoSection() {
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
-                        copyToClipboard(result.ip, result.id);
+                        copyToClipboardHandler(result.ip, result.id);
                       }}
                       className="p-1.5 rounded-lg hover:bg-slate-700/50 transition-colors"
                     >
@@ -560,7 +561,7 @@ export default function IPInfoSection() {
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
-                          copyToClipboard(result.ipv6!, `${result.id}-v6`);
+                          copyToClipboardHandler(result.ipv6!, `${result.id}-v6`);
                         }}
                         className="p-1.5 rounded-lg hover:bg-slate-700/50 transition-colors"
                       >
