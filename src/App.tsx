@@ -1,8 +1,9 @@
 import React from 'react';
-import { Routes, Route, NavLink } from 'react-router-dom';
+import { Routes, Route, NavLink, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Globe, Activity, Shield, Server, Zap, Wrench, Sun, Moon, Github } from 'lucide-react';
+import { Globe, Activity, Shield, Server, Zap, Wrench, Sun, Moon, Github, RefreshCw } from 'lucide-react';
 import { useTheme } from './hooks/useTheme';
+import { useGlobalRefresh } from './hooks/useGlobalRefresh';
 import Home from './pages/Home';
 import ConnectivityTest from './components/ConnectivityTest';
 import WebRTCSection from './components/WebRTCSection';
@@ -22,6 +23,11 @@ const navItems = [
 function App() {
   const { theme, toggleTheme } = useTheme();
   const isDark = theme === 'dark';
+  const location = useLocation();
+  const { refreshing, triggerRefresh } = useGlobalRefresh();
+
+  // 只在首页显示"重新检测全部"按钮
+  const showRefreshBtn = location.pathname === '/';
 
   return (
     <div className="min-h-screen flex flex-col text-primary">
@@ -65,28 +71,46 @@ function App() {
               </div>
             </motion.div>
 
-            {/* Theme toggle */}
-            <motion.button
-              onClick={toggleTheme}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="relative p-2.5 rounded-xl glass-panel border border-soft hover:border-strong transition-all"
-              aria-label="切换主题"
-            >
-              <motion.span
-                key={theme}
-                initial={{ rotate: -90, opacity: 0, scale: 0.5 }}
-                animate={{ rotate: 0, opacity: 1, scale: 1 }}
-                transition={{ duration: 0.3 }}
-                className="block"
+            {/* Right side: Refresh + Theme toggle */}
+            <div className="flex items-center gap-2">
+              {/* 重新检测全部 — 只在首页显示 */}
+              {showRefreshBtn && (
+                <motion.button
+                  onClick={triggerRefresh}
+                  whileHover={{ scale: 1.03 }}
+                  whileTap={{ scale: 0.97 }}
+                  className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl glass-panel border border-soft hover:border-strong text-sm font-medium text-primary transition-all"
+                  aria-label="重新检测全部"
+                  title="重新检测全部"
+                >
+                  <RefreshCw className={`w-4 h-4 text-[var(--accent-blue)] ${refreshing ? 'animate-spin' : ''}`} />
+                  <span className="hidden sm:inline">重新检测全部</span>
+                </motion.button>
+              )}
+
+              {/* Theme toggle */}
+              <motion.button
+                onClick={toggleTheme}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="relative p-2.5 rounded-xl glass-panel border border-soft hover:border-strong transition-all"
+                aria-label="切换主题"
               >
-                {isDark ? (
-                  <Sun className="w-5 h-5 text-amber-400" />
-                ) : (
-                  <Moon className="w-5 h-5 text-indigo-600" />
-                )}
-              </motion.span>
-            </motion.button>
+                <motion.span
+                  key={theme}
+                  initial={{ rotate: -90, opacity: 0, scale: 0.5 }}
+                  animate={{ rotate: 0, opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.3 }}
+                  className="block"
+                >
+                  {isDark ? (
+                    <Sun className="w-5 h-5 text-amber-400" />
+                  ) : (
+                    <Moon className="w-5 h-5 text-indigo-600" />
+                  )}
+                </motion.span>
+              </motion.button>
+            </div>
           </div>
 
           {/* Nav */}
