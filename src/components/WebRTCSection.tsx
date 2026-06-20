@@ -206,20 +206,20 @@ export default function WebRTCSection() {
   return (
     <div className="space-y-6">
       {/* 标题栏 */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between flex-wrap gap-3">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-cyan-400 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/20">
-            <Radio className="w-6 h-6 text-white" />
+          <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-violet-500 to-purple-400 flex items-center justify-center shadow-glow-purple">
+            <Radio className="w-5 h-5 text-white" />
           </div>
           <div>
-            <h2 className="text-xl font-bold text-white">WebRTC 泄漏测试</h2>
-            <p className="text-slate-400 text-sm">检测浏览器 WebRTC 是否暴露真实 IP 地址</p>
+            <h2 className="text-xl font-bold text-primary">WebRTC 泄漏测试</h2>
+            <p className="text-secondary text-sm">检测浏览器 WebRTC 是否暴露真实 IP 地址</p>
           </div>
         </div>
         <button
           onClick={detectWebRTC}
           disabled={loading || !webrtcSupported}
-          className="flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-500 hover:bg-blue-600 disabled:bg-slate-700 transition-colors text-sm font-medium"
+          className="btn-primary flex items-center gap-2 text-sm disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
           {loading ? '检测中...' : '重新检测'}
@@ -228,19 +228,19 @@ export default function WebRTCSection() {
 
       {/* WebRTC 不支持提示 */}
       {!webrtcSupported && (
-        <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-xl p-4">
+        <div className="glass-card p-4 border-l-4 !border-l-[var(--accent-yellow)]">
           <div className="flex items-center gap-3">
-            <AlertTriangle className="w-5 h-5 text-yellow-400" />
+            <AlertTriangle className="w-5 h-5 text-[var(--accent-yellow)] shrink-0" />
             <div>
-              <p className="text-yellow-400 font-medium">您的浏览器不支持 WebRTC</p>
-              <p className="text-slate-400 text-sm mt-1">无法执行 WebRTC 泄漏检测</p>
+              <p className="text-[var(--accent-yellow)] font-medium">您的浏览器不支持 WebRTC</p>
+              <p className="text-secondary text-sm mt-1">无法执行 WebRTC 泄漏检测</p>
             </div>
           </div>
         </div>
       )}
 
       {/* Tab 导航 */}
-      <div className="flex gap-2 border-b border-slate-700/50">
+      <div className="flex gap-1 p-1 glass-card !rounded-2xl overflow-x-auto">
         {[
           { key: 'overview', label: '检测概览', icon: Shield },
           { key: 'detail', label: '详细结果', icon: Terminal },
@@ -249,10 +249,10 @@ export default function WebRTCSection() {
           <button
             key={tab.key}
             onClick={() => setActiveTab(tab.key as any)}
-            className={`flex items-center gap-2 px-4 py-2 text-sm font-medium transition-colors border-b-2 ${
+            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all whitespace-nowrap ${
               activeTab === tab.key
-                ? 'text-blue-400 border-blue-400'
-                : 'text-slate-400 border-transparent hover:text-slate-300'
+                ? 'bg-gradient-brand text-white shadow-glow-blue'
+                : 'text-secondary hover:text-primary hover:bg-[var(--bg-input)]'
             }`}
           >
             <tab.icon className="w-4 h-4" />
@@ -267,19 +267,21 @@ export default function WebRTCSection() {
           <motion.div key="overview" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="space-y-4">
 
             {/* 泄漏状态 */}
-            <div className={`p-5 rounded-2xl border-2 ${hasLeak ? 'bg-red-500/10 border-red-500/50' : hasRun ? 'bg-green-500/10 border-green-500/50' : 'bg-slate-800/50 border-slate-700/50'}`}>
+            <div className={`glass-card p-5 ${hasLeak ? '!border-l-4 !border-l-[var(--accent-red)]' : hasRun ? '!border-l-4 !border-l-[var(--accent-green)]' : ''}`}>
               <div className="flex items-center gap-4">
-                <div className={`w-14 h-14 rounded-2xl flex items-center justify-center ${hasLeak ? 'bg-red-500/20' : hasRun ? 'bg-green-500/20' : 'bg-slate-700/50'}`}>
-                  {loading ? <RefreshCw className="w-7 h-7 text-blue-400 animate-spin" /> :
-                   hasLeak ? <Unlock className="w-7 h-7 text-red-400" /> :
-                   hasRun ? <Lock className="w-7 h-7 text-green-400" /> :
-                   <Radio className="w-7 h-7 text-slate-400" />}
+                <div className={`w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 ${
+                  hasLeak ? 'bg-[var(--accent-red)]/15' : hasRun ? 'bg-[var(--accent-green)]/15' : 'bg-[var(--bg-input)]'
+                }`}>
+                  {loading ? <RefreshCw className="w-7 h-7 text-[var(--accent-blue)] animate-spin" /> :
+                   hasLeak ? <Unlock className="w-7 h-7 text-[var(--accent-red)]" /> :
+                   hasRun ? <Lock className="w-7 h-7 text-[var(--accent-green)]" /> :
+                   <Radio className="w-7 h-7 text-tertiary" />}
                 </div>
                 <div>
-                  <span className={`text-xl font-bold ${hasLeak ? 'text-red-400' : hasRun ? 'text-green-400' : 'text-slate-400'}`}>
+                  <span className={`text-xl font-bold ${hasLeak ? 'text-[var(--accent-red)]' : hasRun ? 'text-[var(--accent-green)]' : 'text-secondary'}`}>
                     {loading ? '正在检测...' : hasLeak ? '检测到 WebRTC 泄漏' : hasRun ? '未检测到 IP 泄漏' : '等待检测'}
                   </span>
-                  <p className="text-slate-400 text-sm mt-1">
+                  <p className="text-secondary text-sm mt-1">
                     {loading ? '正在通过 STUN 服务器收集 ICE candidates...' :
                      hasLeak ? `发现 ${publicIPs.length} 个公网 IP 通过 WebRTC 暴露` :
                      hasRun ? '您的 WebRTC 连接未暴露公网 IP' :
@@ -292,47 +294,47 @@ export default function WebRTCSection() {
             {/* IP 地址汇总 */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* 本地 IP */}
-              <div className="bg-slate-800/30 rounded-xl p-4 border border-slate-700/50">
+              <div className="glass-card p-4">
                 <div className="flex items-center gap-2 mb-3">
-                  <Monitor className="w-4 h-4 text-blue-400" />
-                  <span className="text-white font-medium text-sm">本地 IP 地址 (Host)</span>
-                  <span className="text-xs px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-400">{localIPs.length}</span>
+                  <Monitor className="w-4 h-4 text-[var(--accent-blue)]" />
+                  <span className="text-primary font-medium text-sm">本地 IP 地址 (Host)</span>
+                  <span className="text-xs px-2 py-0.5 rounded-full bg-[var(--accent-blue)]/15 text-[var(--accent-blue)]">{localIPs.length}</span>
                 </div>
-                <p className="text-slate-500 text-xs mb-3">内网地址，仅在局域网内可路由</p>
+                <p className="text-tertiary text-xs mb-3">内网地址，仅在局域网内可路由</p>
                 <div className="flex flex-wrap gap-2">
                   {localIPs.length > 0 ? localIPs.map((ip, i) => (
-                    <div key={i} className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-700/50 rounded-lg">
-                      <span className="w-1.5 h-1.5 rounded-full bg-blue-400" />
-                      <code className="text-blue-400 font-mono text-sm">{ip}</code>
-                      <button onClick={() => copyToClipboardHandler(ip, `local-${i}`)} className="p-0.5 hover:bg-slate-600/50 rounded">
-                        {copied === `local-${i}` ? <Check className="w-3 h-3 text-green-400" /> : <Copy className="w-3 h-3 text-slate-500" />}
+                    <div key={i} className="flex items-center gap-1.5 px-3 py-1.5 inner-card">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[var(--accent-blue)]" />
+                      <code className="text-[var(--accent-blue)] font-mono text-sm">{ip}</code>
+                      <button onClick={() => copyToClipboardHandler(ip, `local-${i}`)} className="p-0.5 hover:bg-[var(--bg-input)] rounded">
+                        {copied === `local-${i}` ? <Check className="w-3 h-3 text-[var(--accent-green)]" /> : <Copy className="w-3 h-3 text-tertiary" />}
                       </button>
                     </div>
                   )) : (
-                    <span className="text-slate-500 text-sm">{loading ? '检测中...' : '未检测到'}</span>
+                    <span className="text-tertiary text-sm">{loading ? '检测中...' : '未检测到'}</span>
                   )}
                 </div>
               </div>
 
               {/* 公网 IP */}
-              <div className={`rounded-xl p-4 border ${hasLeak ? 'bg-red-500/5 border-red-500/30' : 'bg-slate-800/30 border-slate-700/50'}`}>
+              <div className={`glass-card p-4 ${hasLeak ? '!border-l-4 !border-l-[var(--accent-red)]' : ''}`}>
                 <div className="flex items-center gap-2 mb-3">
-                  <Globe className="w-4 h-4 text-red-400" />
-                  <span className="text-white font-medium text-sm">公网 IP 地址 (Server Reflexive)</span>
-                  <span className={`text-xs px-2 py-0.5 rounded-full ${hasLeak ? 'bg-red-500/20 text-red-400' : 'bg-green-500/20 text-green-400'}`}>{publicIPs.length}</span>
+                  <Globe className="w-4 h-4 text-[var(--accent-red)]" />
+                  <span className="text-primary font-medium text-sm">公网 IP 地址 (Server Reflexive)</span>
+                  <span className={`text-xs px-2 py-0.5 rounded-full ${hasLeak ? 'bg-[var(--accent-red)]/15 text-[var(--accent-red)]' : 'bg-[var(--accent-green)]/15 text-[var(--accent-green)]'}`}>{publicIPs.length}</span>
                 </div>
-                <p className="text-slate-500 text-xs mb-3">由 STUN 服务器发现的公网 IP，可能泄漏真实地址</p>
+                <p className="text-tertiary text-xs mb-3">由 STUN 服务器发现的公网 IP，可能泄漏真实地址</p>
                 <div className="flex flex-wrap gap-2">
                   {publicIPs.length > 0 ? publicIPs.map((ip, i) => (
-                    <div key={i} className="flex items-center gap-1.5 px-3 py-1.5 bg-red-500/10 rounded-lg border border-red-500/20">
-                      <span className="w-1.5 h-1.5 rounded-full bg-red-400 animate-pulse" />
-                      <code className="text-red-400 font-mono text-sm">{ip}</code>
-                      <button onClick={() => copyToClipboardHandler(ip, `public-${i}`)} className="p-0.5 hover:bg-slate-600/50 rounded">
-                        {copied === `public-${i}` ? <Check className="w-3 h-3 text-green-400" /> : <Copy className="w-3 h-3 text-slate-500" />}
+                    <div key={i} className="flex items-center gap-1.5 px-3 py-1.5 bg-[var(--accent-red)]/10 rounded-lg border border-[var(--accent-red)]/20">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[var(--accent-red)] animate-pulse" />
+                      <code className="text-[var(--accent-red)] font-mono text-sm">{ip}</code>
+                      <button onClick={() => copyToClipboardHandler(ip, `public-${i}`)} className="p-0.5 hover:bg-[var(--bg-input)] rounded">
+                        {copied === `public-${i}` ? <Check className="w-3 h-3 text-[var(--accent-green)]" /> : <Copy className="w-3 h-3 text-tertiary" />}
                       </button>
                     </div>
                   )) : (
-                    <span className={`text-sm ${hasLeak ? 'text-red-400' : loading ? 'text-slate-500' : 'text-green-400'}`}>
+                    <span className={`text-sm ${hasLeak ? 'text-[var(--accent-red)]' : loading ? 'text-tertiary' : 'text-[var(--accent-green)]'}`}>
                       {loading ? '检测中...' : '无暴露 ✓'}
                     </span>
                   )}
@@ -341,9 +343,9 @@ export default function WebRTCSection() {
             </div>
 
             {/* WebRTC API 支持状态 */}
-            <div className="bg-slate-800/30 rounded-xl p-4 border border-slate-700/50">
-              <h3 className="text-white font-medium text-sm mb-3 flex items-center gap-2">
-                <Layers className="w-4 h-4 text-cyan-400" />
+            <div className="glass-card p-4">
+              <h3 className="text-primary font-medium text-sm mb-3 flex items-center gap-2">
+                <Layers className="w-4 h-4 text-[var(--accent-cyan)]" />
                 WebRTC API 支持状态
               </h3>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
@@ -353,9 +355,9 @@ export default function WebRTCSection() {
                   { name: 'getUserMedia', supported: !!(navigator.mediaDevices?.getUserMedia) },
                   { name: 'getDisplayMedia', supported: !!(navigator.mediaDevices?.getDisplayMedia) },
                 ].map(api => (
-                  <div key={api.name} className={`flex items-center gap-2 px-3 py-2 rounded-lg ${api.supported ? 'bg-green-500/10 border border-green-500/20' : 'bg-red-500/10 border border-red-500/20'}`}>
-                    {api.supported ? <CheckCircle className="w-4 h-4 text-green-400" /> : <XCircle className="w-4 h-4 text-red-400" />}
-                    <span className={`text-xs ${api.supported ? 'text-green-400' : 'text-red-400'}`}>{api.name}</span>
+                  <div key={api.name} className={`flex items-center gap-2 px-3 py-2 rounded-lg ${api.supported ? 'bg-[var(--accent-green)]/10 border border-[var(--accent-green)]/20' : 'bg-[var(--accent-red)]/10 border border-[var(--accent-red)]/20'}`}>
+                    {api.supported ? <CheckCircle className="w-4 h-4 text-[var(--accent-green)]" /> : <XCircle className="w-4 h-4 text-[var(--accent-red)]" />}
+                    <span className={`text-xs ${api.supported ? 'text-[var(--accent-green)]' : 'text-[var(--accent-red)]'}`}>{api.name}</span>
                   </div>
                 ))}
               </div>
@@ -363,27 +365,27 @@ export default function WebRTCSection() {
 
             {/* STUN 服务器扫描进度 */}
             {stunResults.length > 0 && (
-              <div className="bg-slate-800/30 rounded-xl p-4 border border-slate-700/50">
-                <h3 className="text-white font-medium text-sm mb-3 flex items-center gap-2">
-                  <Server className="w-4 h-4 text-blue-400" />
+              <div className="glass-card p-4">
+                <h3 className="text-primary font-medium text-sm mb-3 flex items-center gap-2">
+                  <Server className="w-4 h-4 text-[var(--accent-blue)]" />
                   STUN 服务器扫描
                 </h3>
                 <div className="space-y-2">
                   {stunResults.map((sr) => (
-                    <div key={sr.url} className={`flex items-center justify-between px-3 py-2 rounded-lg ${sr.status === 'done' ? 'bg-green-500/5 border border-green-500/20' : sr.status === 'error' ? 'bg-red-500/5 border border-red-500/20' : 'bg-slate-700/30'}`}>
-                      <div className="flex items-center gap-2">
-                        {sr.status === 'checking' ? <RefreshCw className="w-3.5 h-3.5 text-blue-400 animate-spin" /> :
-                         sr.status === 'done' ? <CheckCircle className="w-3.5 h-3.5 text-green-400" /> :
-                         <XCircle className="w-3.5 h-3.5 text-red-400" />}
-                        <span className="text-white text-sm">{sr.name}</span>
-                        <span className="text-slate-500 text-xs">{sr.url.replace('stun:', '')}</span>
+                    <div key={sr.url} className={`flex items-center justify-between px-3 py-2 rounded-lg ${sr.status === 'done' ? 'bg-[var(--accent-green)]/5 border border-[var(--accent-green)]/20' : sr.status === 'error' ? 'bg-[var(--accent-red)]/5 border border-[var(--accent-red)]/20' : 'inner-card'}`}>
+                      <div className="flex items-center gap-2 min-w-0">
+                        {sr.status === 'checking' ? <RefreshCw className="w-3.5 h-3.5 text-[var(--accent-blue)] animate-spin shrink-0" /> :
+                         sr.status === 'done' ? <CheckCircle className="w-3.5 h-3.5 text-[var(--accent-green)] shrink-0" /> :
+                         <XCircle className="w-3.5 h-3.5 text-[var(--accent-red)] shrink-0" />}
+                        <span className="text-primary text-sm">{sr.name}</span>
+                        <span className="text-tertiary text-xs truncate">{sr.url.replace('stun:', '')}</span>
                       </div>
-                      <div className="flex items-center gap-3">
+                      <div className="flex items-center gap-3 shrink-0">
                         {sr.candidates.length > 0 && (
-                          <span className="text-xs text-slate-400">{sr.candidates.length} candidates</span>
+                          <span className="text-xs text-secondary">{sr.candidates.length} candidates</span>
                         )}
                         {sr.responseTime > 0 && (
-                          <span className="text-xs text-cyan-400">{sr.responseTime}ms</span>
+                          <span className="text-xs text-[var(--accent-cyan)] font-mono">{sr.responseTime}ms</span>
                         )}
                       </div>
                     </div>
@@ -393,15 +395,15 @@ export default function WebRTCSection() {
             )}
 
             {/* 说明 */}
-            <div className="bg-slate-800/30 rounded-xl p-4 border border-slate-700/50">
-              <h3 className="text-white font-medium mb-2 flex items-center gap-2 text-sm">
-                <Wifi className="w-4 h-4 text-blue-400" />
+            <div className="glass-card p-4">
+              <h3 className="text-primary font-medium mb-2 flex items-center gap-2 text-sm">
+                <Wifi className="w-4 h-4 text-[var(--accent-blue)]" />
                 什么是 WebRTC 泄漏？
               </h3>
-              <p className="text-slate-400 text-sm leading-relaxed">
+              <p className="text-secondary text-sm leading-relaxed">
                 WebRTC 通过 ICE 协议建立连接时会向 STUN 服务器发送请求，可能绕过 VPN/代理暴露真实公网 IP。
-                <strong className="text-white">Host</strong> 类型为本地内网地址（风险低），
-                <strong className="text-red-400">Server Reflexive</strong> 类型为 STUN 发现的公网 IP（泄漏风险高）。
+                <strong className="text-primary"> Host</strong> 类型为本地内网地址（风险低），
+                <strong className="text-[var(--accent-red)]"> Server Reflexive</strong> 类型为 STUN 发现的公网 IP（泄漏风险高）。
               </p>
             </div>
           </motion.div>
@@ -416,29 +418,29 @@ export default function WebRTCSection() {
               if (cands.length === 0) return null;
               const info = getTypeLabel(type);
               return (
-                <div key={type} className="bg-slate-800/30 rounded-xl border border-slate-700/50 overflow-hidden">
-                  <div className="flex items-center justify-between px-4 py-3 bg-slate-800/50 border-b border-slate-700/30">
+                <div key={type} className="glass-card overflow-hidden">
+                  <div className="flex items-center justify-between px-4 py-3 border-b border-soft">
                     <div className="flex items-center gap-2">
                       <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${info.bg} ${info.color}`}>{type.toUpperCase()}</span>
-                      <span className="text-white font-medium text-sm">{info.label}</span>
+                      <span className="text-primary font-medium text-sm">{info.label}</span>
                     </div>
-                    <span className="text-slate-500 text-xs">{cands.length} 个</span>
+                    <span className="text-tertiary text-xs">{cands.length} 个</span>
                   </div>
-                  <div className="divide-y divide-slate-700/20">
+                  <div className="divide-y divide-[var(--border-soft)]">
                     {/* 去重 */}
                     {[...new Map(cands.map(c => [c.ip, c])).values()].map((c, i) => (
-                      <div key={i} className="flex items-center justify-between px-4 py-2.5 hover:bg-slate-800/30 transition-colors">
-                        <div className="flex items-center gap-3">
-                          <span className={`w-1.5 h-1.5 rounded-full ${type === 'srflx' ? 'bg-red-400' : type === 'host' ? 'bg-blue-400' : 'bg-yellow-400'}`} />
-                          <code className={`font-mono text-sm ${info.color}`}>{c.ip}:{c.port}</code>
-                          <span className="text-xs text-slate-500 uppercase">{c.protocol}</span>
+                      <div key={i} className="flex items-center justify-between px-4 py-2.5 hover:bg-[var(--bg-input)] transition-colors">
+                        <div className="flex items-center gap-3 min-w-0">
+                          <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${type === 'srflx' ? 'bg-[var(--accent-red)]' : type === 'host' ? 'bg-[var(--accent-blue)]' : 'bg-[var(--accent-yellow)]'}`} />
+                          <code className={`font-mono text-sm truncate ${info.color}`}>{c.ip}:{c.port}</code>
+                          <span className="text-xs text-tertiary uppercase">{c.protocol}</span>
                         </div>
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2 shrink-0">
                           {c.relatedAddress && (
-                            <span className="text-xs text-slate-500">via {c.relatedAddress}:{c.relatedPort}</span>
+                            <span className="text-xs text-tertiary hidden sm:inline">via {c.relatedAddress}:{c.relatedPort}</span>
                           )}
-                          <button onClick={() => copyToClipboardHandler(c.ip, `cand-${type}-${i}`)} className="p-1 rounded hover:bg-slate-700/50 transition-colors">
-                            {copied === `cand-${type}-${i}` ? <Check className="w-3.5 h-3.5 text-green-400" /> : <Copy className="w-3.5 h-3.5 text-slate-500" />}
+                          <button onClick={() => copyToClipboardHandler(c.ip, `cand-${type}-${i}`)} className="p-1 rounded hover:bg-[var(--bg-input)] transition-colors">
+                            {copied === `cand-${type}-${i}` ? <Check className="w-3.5 h-3.5 text-[var(--accent-green)]" /> : <Copy className="w-3.5 h-3.5 text-tertiary" />}
                           </button>
                         </div>
                       </div>
@@ -449,23 +451,23 @@ export default function WebRTCSection() {
             })}
 
             {allCandidates.length === 0 && (
-              <div className="text-center py-8 text-slate-500">
+              <div className="text-center py-12 text-tertiary glass-card">
                 {loading ? '正在收集 ICE candidates...' : '暂无检测数据，请先执行检测'}
               </div>
             )}
 
             {/* SDP 日志 */}
             {sdpLog && (
-              <div className="bg-slate-800/30 rounded-xl border border-slate-700/50 overflow-hidden">
+              <div className="glass-card overflow-hidden">
                 <button
                   onClick={() => setShowSDP(!showSDP)}
-                  className="w-full flex items-center justify-between px-4 py-3 hover:bg-slate-800/50 transition-colors"
+                  className="w-full flex items-center justify-between px-4 py-3 hover:bg-[var(--bg-input)] transition-colors"
                 >
                   <div className="flex items-center gap-2">
-                    <Terminal className="w-4 h-4 text-slate-400" />
-                    <span className="text-white font-medium text-sm">SDP 日志 (Session Description Protocol)</span>
+                    <Terminal className="w-4 h-4 text-[var(--accent-cyan)]" />
+                    <span className="text-primary font-medium text-sm">SDP 日志 (Session Description Protocol)</span>
                   </div>
-                  {showSDP ? <EyeOff className="w-4 h-4 text-slate-400" /> : <Eye className="w-4 h-4 text-slate-400" />}
+                  {showSDP ? <EyeOff className="w-4 h-4 text-tertiary" /> : <Eye className="w-4 h-4 text-tertiary" />}
                 </button>
                 <AnimatePresence>
                   {showSDP && (
@@ -475,15 +477,15 @@ export default function WebRTCSection() {
                       exit={{ height: 0, opacity: 0 }}
                       className="overflow-hidden"
                     >
-                      <pre className="px-4 py-3 text-xs font-mono text-slate-400 bg-slate-900/50 max-h-96 overflow-y-auto whitespace-pre-wrap break-all">
+                      <pre className="px-4 py-3 text-xs font-mono text-secondary bg-[var(--bg-input)] max-h-96 overflow-y-auto whitespace-pre-wrap break-all">
                         {sdpLog}
                       </pre>
-                      <div className="px-4 py-2 border-t border-slate-700/30">
+                      <div className="px-4 py-2 border-t border-soft">
                         <button
                           onClick={() => copyToClipboardHandler(sdpLog, 'sdp')}
-                          className="flex items-center gap-2 text-xs text-slate-400 hover:text-white transition-colors"
+                          className="flex items-center gap-2 text-xs text-secondary hover:text-primary transition-colors"
                         >
-                          {copied === 'sdp' ? <Check className="w-3 h-3 text-green-400" /> : <Copy className="w-3 h-3" />}
+                          {copied === 'sdp' ? <Check className="w-3 h-3 text-[var(--accent-green)]" /> : <Copy className="w-3 h-3" />}
                           {copied === 'sdp' ? '已复制' : '复制 SDP 日志'}
                         </button>
                       </div>
@@ -498,9 +500,9 @@ export default function WebRTCSection() {
         {/* ── 防护建议 ── */}
         {activeTab === 'protection' && (
           <motion.div key="protection" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="space-y-4">
-            <div className="bg-slate-800/30 rounded-xl p-5 border border-slate-700/50">
-              <h3 className="text-white font-medium mb-4 flex items-center gap-2">
-                <AlertTriangle className="w-5 h-5 text-yellow-400" />
+            <div className="glass-card p-5">
+              <h3 className="text-primary font-medium mb-4 flex items-center gap-2">
+                <AlertTriangle className="w-5 h-5 text-[var(--accent-yellow)]" />
                 如何防止 WebRTC 泄漏
               </h3>
               <div className="space-y-3">
@@ -526,12 +528,16 @@ export default function WebRTCSection() {
                     level: 'low',
                   },
                 ].map((item, i) => (
-                  <div key={i} className={`p-4 rounded-lg border ${item.level === 'high' ? 'bg-red-500/5 border-red-500/20' : item.level === 'medium' ? 'bg-yellow-500/5 border-yellow-500/20' : 'bg-blue-500/5 border-blue-500/20'}`}>
+                  <div key={i} className={`p-4 rounded-lg border ${
+                    item.level === 'high' ? 'bg-[var(--accent-red)]/5 border-[var(--accent-red)]/20' :
+                    item.level === 'medium' ? 'bg-[var(--accent-yellow)]/5 border-[var(--accent-yellow)]/20' :
+                    'bg-[var(--accent-blue)]/5 border-[var(--accent-blue)]/20'
+                  }`}>
                     <div className="flex items-center gap-2 mb-2">
-                      <span className={`w-2 h-2 rounded-full ${item.level === 'high' ? 'bg-red-400' : item.level === 'medium' ? 'bg-yellow-400' : 'bg-blue-400'}`} />
-                      <span className="text-white font-medium text-sm">{item.browser}</span>
+                      <span className={`w-2 h-2 rounded-full ${item.level === 'high' ? 'bg-[var(--accent-red)]' : item.level === 'medium' ? 'bg-[var(--accent-yellow)]' : 'bg-[var(--accent-blue)]'}`} />
+                      <span className="text-primary font-medium text-sm">{item.browser}</span>
                     </div>
-                    <ol className="text-slate-400 text-xs space-y-1 ml-4 list-decimal list-inside">
+                    <ol className="text-secondary text-xs space-y-1 ml-4 list-decimal list-inside">
                       {item.steps.map((s, j) => <li key={j}>{s}</li>)}
                     </ol>
                   </div>
@@ -539,13 +545,13 @@ export default function WebRTCSection() {
               </div>
             </div>
 
-            <div className="bg-blue-500/10 rounded-xl p-4 border border-blue-500/30">
-              <h4 className="text-blue-400 font-medium mb-2">推荐工具</h4>
-              <ul className="text-slate-400 text-sm space-y-1">
-                <li>• WebRTC Network Limiter (Chrome 官方扩展)</li>
-                <li>• uBlock Origin (启用阻止 WebRTC 选项)</li>
-                <li>• Privacy Badger (EFF 开发的隐私保护工具)</li>
-                <li>• 使用支持 WebRTC 泄漏保护的 VPN 服务</li>
+            <div className="glass-card p-4 !border-l-4 !border-l-[var(--accent-blue)]">
+              <h4 className="text-[var(--accent-blue)] font-medium mb-2">推荐工具</h4>
+              <ul className="text-secondary text-sm space-y-1.5">
+                <li className="flex gap-2"><span className="text-tertiary">·</span> WebRTC Network Limiter (Chrome 官方扩展)</li>
+                <li className="flex gap-2"><span className="text-tertiary">·</span> uBlock Origin (启用阻止 WebRTC 选项)</li>
+                <li className="flex gap-2"><span className="text-tertiary">·</span> Privacy Badger (EFF 开发的隐私保护工具)</li>
+                <li className="flex gap-2"><span className="text-tertiary">·</span> 使用支持 WebRTC 泄漏保护的 VPN 服务</li>
               </ul>
             </div>
           </motion.div>

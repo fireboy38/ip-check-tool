@@ -199,20 +199,20 @@ export default function DNSSection() {
   return (
     <div className="space-y-6">
       {/* 标题栏 */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between flex-wrap gap-3">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-400 rounded-xl flex items-center justify-center shadow-lg shadow-purple-500/20">
-            <Server className="w-6 h-6 text-white" />
+          <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-amber-500 to-orange-400 flex items-center justify-center shadow-glow-purple">
+            <Server className="w-5 h-5 text-white" />
           </div>
           <div>
-            <h2 className="text-xl font-bold text-white">DNS 泄漏测试</h2>
-            <p className="text-slate-400 text-sm">通过 DNS-over-HTTPS 查询检测 DNS 解析情况</p>
+            <h2 className="text-xl font-bold text-primary">DNS 泄漏测试</h2>
+            <p className="text-secondary text-sm">通过 DNS-over-HTTPS 查询检测 DNS 解析情况</p>
           </div>
         </div>
         <button
           onClick={runTest}
           disabled={loading}
-          className="flex items-center gap-2 px-4 py-2 rounded-lg bg-purple-500 hover:bg-purple-600 disabled:bg-slate-700 transition-colors text-sm font-medium"
+          className="btn-primary flex items-center gap-2 text-sm disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
           {loading ? '检测中...' : '重新检测'}
@@ -220,20 +220,20 @@ export default function DNSSection() {
       </div>
 
       {/* Tab 导航 */}
-      <div className="flex gap-2 border-b border-slate-700/50 overflow-x-auto">
+      <div className="flex gap-1 p-1 glass-card !rounded-2xl overflow-x-auto">
         {[
-          { key: 'test', label: 'DNS 查询', icon: Globe },
-          { key: 'compare', label: '解析器对比', icon: ArrowRight },
-          { key: 'servers', label: 'DNS 服务器', icon: Server },
-          { key: 'protection', label: '防护建议', icon: Lock },
+          { key: 'test',       label: 'DNS 查询',    icon: Globe },
+          { key: 'compare',    label: '解析器对比',  icon: ArrowRight },
+          { key: 'servers',    label: 'DNS 服务器',  icon: Server },
+          { key: 'protection', label: '防护建议',    icon: Lock },
         ].map(tab => (
           <button
             key={tab.key}
             onClick={() => setActiveTab(tab.key as any)}
-            className={`flex items-center gap-2 px-4 py-2 text-sm font-medium transition-colors border-b-2 whitespace-nowrap ${
+            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all whitespace-nowrap ${
               activeTab === tab.key
-                ? 'text-purple-400 border-purple-400'
-                : 'text-slate-400 border-transparent hover:text-slate-300'
+                ? 'bg-gradient-brand text-white shadow-glow-blue'
+                : 'text-secondary hover:text-primary hover:bg-[var(--bg-input)]'
             }`}
           >
             <tab.icon className="w-4 h-4" />
@@ -248,20 +248,20 @@ export default function DNSSection() {
           <motion.div key="test" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="space-y-4">
 
             {/* 选择解析器 */}
-            <div className="bg-slate-800/30 rounded-xl p-4 border border-slate-700/50">
+            <div className="glass-card p-4">
               <div className="flex items-center gap-2 mb-3">
-                <Server className="w-4 h-4 text-purple-400" />
-                <span className="text-white font-medium text-sm">选择 DNS 解析器</span>
+                <Server className="w-4 h-4 text-[var(--accent-purple)]" />
+                <span className="text-primary font-medium text-sm">选择 DNS 解析器</span>
               </div>
               <div className="flex flex-wrap gap-2">
                 {DNS_RESOLVERS.map(r => (
                   <button
                     key={r.dohUrl}
                     onClick={() => { setActiveResolver(r.dohUrl); }}
-                    className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all ${
+                    className={`flex items-center gap-2 px-3 py-2 rounded-xl text-sm transition-all ${
                       activeResolver === r.dohUrl
                         ? `bg-gradient-to-r ${r.color} text-white shadow-lg`
-                        : 'bg-slate-700/50 text-slate-300 hover:bg-slate-700'
+                        : 'inner-card text-secondary hover:text-primary'
                     }`}
                   >
                     <span className="font-mono text-xs">{r.ip}</span>
@@ -274,15 +274,15 @@ export default function DNSSection() {
             {/* 统计概览 */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
               {[
-                { label: '当前出口', value: currentResolver, icon: Globe, color: 'text-cyan-400' },
-                { label: '查询成功', value: `${successCount}/${queryResults.length}`, icon: CheckCircle, color: 'text-green-400' },
-                { label: '查询失败', value: `${failedCount}`, icon: XCircle, color: failedCount > 0 ? 'text-red-400' : 'text-slate-500' },
-                { label: '平均响应', value: `${avgResponseTime}ms`, icon: Clock, color: avgResponseTime < 100 ? 'text-green-400' : avgResponseTime < 500 ? 'text-yellow-400' : 'text-red-400' },
+                { label: '当前出口', value: currentResolver, icon: Globe,       color: 'text-[var(--accent-cyan)]' },
+                { label: '查询成功', value: `${successCount}/${queryResults.length}`, icon: CheckCircle, color: 'text-[var(--accent-green)]' },
+                { label: '查询失败', value: `${failedCount}`, icon: XCircle,    color: failedCount > 0 ? 'text-[var(--accent-red)]' : 'text-tertiary' },
+                { label: '平均响应', value: `${avgResponseTime}ms`, icon: Clock, color: avgResponseTime < 100 ? 'text-[var(--accent-green)]' : avgResponseTime < 500 ? 'text-[var(--accent-yellow)]' : 'text-[var(--accent-red)]' },
               ].map((stat, i) => (
-                <div key={i} className="bg-slate-800/30 rounded-xl p-3 border border-slate-700/50">
+                <div key={i} className="inner-card p-3">
                   <div className="flex items-center gap-1.5 mb-1">
                     <stat.icon className={`w-3.5 h-3.5 ${stat.color}`} />
-                    <span className="text-slate-400 text-xs">{stat.label}</span>
+                    <span className="text-tertiary text-xs">{stat.label}</span>
                   </div>
                   <p className={`${stat.color} font-semibold text-sm truncate`} title={stat.value}>{stat.value}</p>
                 </div>
@@ -290,81 +290,81 @@ export default function DNSSection() {
             </div>
 
             {/* 查询结果列表 */}
-            <div className="bg-slate-800/30 rounded-xl border border-slate-700/50 overflow-hidden">
-              <div className="px-4 py-3 bg-slate-800/50 border-b border-slate-700/30 flex items-center justify-between">
+            <div className="glass-card overflow-hidden">
+              <div className="px-4 py-3 border-b border-soft flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <Globe className="w-4 h-4 text-purple-400" />
-                  <span className="text-white font-medium text-sm">DNS 查询结果</span>
+                  <Globe className="w-4 h-4 text-[var(--accent-purple)]" />
+                  <span className="text-primary font-medium text-sm">DNS 查询结果</span>
                 </div>
-                <span className="text-xs text-slate-500">
+                <span className="text-xs text-tertiary">
                   解析器: {DNS_RESOLVERS.find(r => r.dohUrl === activeResolver)?.name}
                 </span>
               </div>
-              <div className="divide-y divide-slate-700/20">
+              <div className="divide-y divide-[var(--border-soft)]">
                 {queryResults.map((result, i) => (
-                  <div key={result.domain} className="px-4 py-3 hover:bg-slate-800/30 transition-colors">
+                  <div key={result.domain} className="px-4 py-3 hover:bg-[var(--bg-input)] transition-colors">
                     <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center gap-2">
                         {result.status === 'checking' ? (
-                          <RefreshCw className="w-4 h-4 text-blue-400 animate-spin" />
+                          <RefreshCw className="w-4 h-4 text-[var(--accent-blue)] animate-spin" />
                         ) : result.status === 'success' ? (
-                          <CheckCircle className="w-4 h-4 text-green-400" />
+                          <CheckCircle className="w-4 h-4 text-[var(--accent-green)]" />
                         ) : (
-                          <XCircle className="w-4 h-4 text-red-400" />
+                          <XCircle className="w-4 h-4 text-[var(--accent-red)]" />
                         )}
-                        <span className="text-white font-medium text-sm">
+                        <span className="text-primary font-medium text-sm">
                           {TEST_DOMAINS[i]?.label || result.domain}
                         </span>
-                        <span className={`text-xs px-1.5 py-0.5 rounded ${TEST_DOMAINS[i]?.region === '国内' ? 'bg-red-500/20 text-red-400' : 'bg-blue-500/20 text-blue-400'}`}>
+                        <span className={`text-xs px-1.5 py-0.5 rounded ${TEST_DOMAINS[i]?.region === '国内' ? 'bg-[var(--accent-red)]/15 text-[var(--accent-red)]' : 'bg-[var(--accent-blue)]/15 text-[var(--accent-blue)]'}`}>
                           {TEST_DOMAINS[i]?.region || '未知'}
                         </span>
                       </div>
                       <div className="flex items-center gap-2">
                         {result.responseTime > 0 && (
-                          <span className={`text-xs font-mono ${result.responseTime < 100 ? 'text-green-400' : result.responseTime < 500 ? 'text-yellow-400' : 'text-red-400'}`}>
+                          <span className={`text-xs font-mono ${result.responseTime < 100 ? 'text-[var(--accent-green)]' : result.responseTime < 500 ? 'text-[var(--accent-yellow)]' : 'text-[var(--accent-red)]'}`}>
                             {result.responseTime}ms
                           </span>
                         )}
                       </div>
                     </div>
                     <div className="ml-6">
-                      <code className="text-slate-500 text-xs">{result.domain}</code>
+                      <code className="text-tertiary text-xs">{result.domain}</code>
                       {result.status === 'success' && result.records.length > 0 && (
                         <div className="flex flex-wrap gap-2 mt-1.5">
                           {result.records.map((rec, j) => (
-                            <div key={j} className="flex items-center gap-1.5 px-2.5 py-1 bg-slate-700/50 rounded-lg">
-                              <span className="text-xs px-1.5 py-0.5 rounded bg-blue-500/20 text-blue-400 font-medium">A</span>
-                              <code className="text-cyan-400 font-mono text-xs">{rec.data}</code>
-                              <span className="text-slate-600 text-xs">TTL {rec.ttl}</span>
-                              <button onClick={() => copyToClipboardHandler(rec.data, `dns-${i}-${j}`)} className="p-0.5 hover:bg-slate-600/50 rounded">
-                                {copied === `dns-${i}-${j}` ? <Check className="w-3 h-3 text-green-400" /> : <Copy className="w-3 h-3 text-slate-500" />}
+                            <div key={j} className="flex items-center gap-1.5 px-2.5 py-1 inner-card">
+                              <span className="text-xs px-1.5 py-0.5 rounded bg-[var(--accent-blue)]/15 text-[var(--accent-blue)] font-medium">A</span>
+                              <code className="text-[var(--accent-cyan)] font-mono text-xs">{rec.data}</code>
+                              <span className="text-tertiary text-xs">TTL {rec.ttl}</span>
+                              <button onClick={() => copyToClipboardHandler(rec.data, `dns-${i}-${j}`)} className="p-0.5 hover:bg-[var(--bg-input)] rounded">
+                                {copied === `dns-${i}-${j}` ? <Check className="w-3 h-3 text-[var(--accent-green)]" /> : <Copy className="w-3 h-3 text-tertiary" />}
                               </button>
                             </div>
                           ))}
                         </div>
                       )}
                       {result.status === 'error' && (
-                        <p className="text-red-400 text-xs mt-1">查询失败（解析器不可达或响应超时）</p>
+                        <p className="text-[var(--accent-red)] text-xs mt-1">查询失败（解析器不可达或响应超时）</p>
                       )}
                       {result.status === 'checking' && (
-                        <p className="text-slate-500 text-xs mt-1">查询中...</p>
+                        <p className="text-tertiary text-xs mt-1">查询中...</p>
                       )}
                     </div>
                   </div>
                 ))}
                 {queryResults.length === 0 && !loading && (
-                  <div className="px-4 py-8 text-center text-slate-500 text-sm">点击"重新检测"开始 DNS 查询测试</div>
+                  <div className="px-4 py-8 text-center text-tertiary text-sm">点击"重新检测"开始 DNS 查询测试</div>
                 )}
               </div>
             </div>
 
             {/* 说明 */}
-            <div className="bg-slate-800/30 rounded-xl p-4 border border-slate-700/50">
-              <h3 className="text-white font-medium mb-2 flex items-center gap-2 text-sm">
-                <Shield className="w-4 h-4 text-purple-400" />
+            <div className="glass-card p-4">
+              <h3 className="text-primary font-medium mb-2 flex items-center gap-2 text-sm">
+                <Shield className="w-4 h-4 text-[var(--accent-purple)]" />
                 什么是 DNS 泄漏？
               </h3>
-              <p className="text-slate-400 text-sm leading-relaxed">
+              <p className="text-secondary text-sm leading-relaxed">
                 当使用 VPN/代理时，如果 DNS 查询仍通过本地 ISP 的 DNS 服务器解析，而非 VPN 隧道内的 DNS，
                 则发生 DNS 泄漏。这会导致 ISP 可以监控你的浏览记录。本测试通过 DNS-over-HTTPS (DoH) 向多个
                 公共 DNS 解析器发送查询，帮助你了解 DNS 解析状态。
@@ -376,17 +376,17 @@ export default function DNSSection() {
         {/* ── 解析器对比 ── */}
         {activeTab === 'compare' && (
           <motion.div key="compare" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="space-y-4">
-            <div className="bg-slate-800/30 rounded-xl p-4 border border-slate-700/50">
-              <div className="flex items-center justify-between mb-3">
+            <div className="glass-card p-4">
+              <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
                 <div>
-                  <p className="text-slate-400 text-sm">
-                    对比不同 DNS 解析器解析 <code className="text-cyan-400">www.google.com</code> 的结果和速度
+                  <p className="text-secondary text-sm">
+                    对比不同 DNS 解析器解析 <code className="text-[var(--accent-cyan)]">www.google.com</code> 的结果和速度
                   </p>
                 </div>
                 <button
                   onClick={runCompare}
                   disabled={compareLoading}
-                  className="flex items-center gap-2 px-3 py-1.5 bg-purple-500 hover:bg-purple-600 disabled:bg-slate-700 rounded-lg text-white text-sm font-medium transition-colors"
+                  className="btn-primary flex items-center gap-2 text-sm !py-2 !px-3.5 disabled:opacity-50"
                 >
                   <RefreshCw className={`w-3.5 h-3.5 ${compareLoading ? 'animate-spin' : ''}`} />
                   {compareLoading ? '对比中...' : '开始对比'}
@@ -400,19 +400,19 @@ export default function DNSSection() {
                   const results = compareResults.get(resolver.name) || [];
                   const result = results[0];
                   return (
-                    <div key={resolver.ip} className="bg-slate-800/30 rounded-xl p-4 border border-slate-700/50">
+                    <div key={resolver.ip} className="glass-card p-4">
                       <div className="flex items-center justify-between mb-3">
                         <div className="flex items-center gap-3">
-                          <div className={`w-8 h-8 bg-gradient-to-br ${resolver.color} rounded-lg flex items-center justify-center`}>
+                          <div className={`w-8 h-8 bg-gradient-to-br ${resolver.color} rounded-lg flex items-center justify-center shadow`}>
                             <Server className="w-4 h-4 text-white" />
                           </div>
                           <div>
-                            <span className="text-white font-medium">{resolver.name}</span>
-                            <code className="text-slate-500 text-xs ml-2">{resolver.ip}</code>
+                            <span className="text-primary font-medium">{resolver.name}</span>
+                            <code className="text-tertiary text-xs ml-2 font-mono">{resolver.ip}</code>
                           </div>
                         </div>
                         {result && result.responseTime > 0 && (
-                          <span className={`text-sm font-mono ${result.responseTime < 100 ? 'text-green-400' : result.responseTime < 500 ? 'text-yellow-400' : 'text-red-400'}`}>
+                          <span className={`text-sm font-mono ${result.responseTime < 100 ? 'text-[var(--accent-green)]' : result.responseTime < 500 ? 'text-[var(--accent-yellow)]' : 'text-[var(--accent-red)]'}`}>
                             {result.responseTime}ms
                           </span>
                         )}
@@ -420,20 +420,20 @@ export default function DNSSection() {
                       {result && result.status === 'success' && result.records.length > 0 ? (
                         <div className="flex flex-wrap gap-2 ml-11">
                           {result.records.map((rec, j) => (
-                            <div key={j} className="flex items-center gap-1.5 px-2.5 py-1 bg-slate-700/50 rounded-lg">
-                              <span className="text-xs px-1.5 py-0.5 rounded bg-cyan-500/20 text-cyan-400 font-medium">A</span>
-                              <code className="text-cyan-400 font-mono text-xs">{rec.data}</code>
+                            <div key={j} className="flex items-center gap-1.5 px-2.5 py-1 inner-card">
+                              <span className="text-xs px-1.5 py-0.5 rounded bg-[var(--accent-cyan)]/15 text-[var(--accent-cyan)] font-medium">A</span>
+                              <code className="text-[var(--accent-cyan)] font-mono text-xs">{rec.data}</code>
                             </div>
                           ))}
                         </div>
                       ) : result?.status === 'error' ? (
-                        <p className="text-red-400 text-xs ml-11">查询失败</p>
+                        <p className="text-[var(--accent-red)] text-xs ml-11">查询失败</p>
                       ) : (
-                        <p className="text-slate-500 text-xs ml-11">检测中...</p>
+                        <p className="text-tertiary text-xs ml-11">检测中...</p>
                       )}
-                      <div className="flex gap-1 mt-2 ml-11">
+                      <div className="flex flex-wrap gap-1 mt-2 ml-11">
                         {resolver.features.map(f => (
-                          <span key={f} className="text-xs px-1.5 py-0.5 rounded bg-slate-700/50 text-slate-500">{f}</span>
+                          <span key={f} className="text-xs px-1.5 py-0.5 rounded inner-card text-tertiary">{f}</span>
                         ))}
                       </div>
                     </div>
@@ -443,7 +443,7 @@ export default function DNSSection() {
             )}
 
             {compareResults.size === 0 && !compareLoading && (
-              <div className="text-center py-8 text-slate-500 text-sm">点击"开始对比"查看不同 DNS 解析器的对比结果</div>
+              <div className="text-center py-8 text-tertiary text-sm glass-card">点击"开始对比"查看不同 DNS 解析器的对比结果</div>
             )}
           </motion.div>
         )}
@@ -457,35 +457,35 @@ export default function DNSSection() {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.05 }}
-                className="bg-slate-800/30 rounded-xl p-4 border border-slate-700/50 hover:border-slate-600 transition-colors"
+                className="glass-card p-4"
               >
-                <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center justify-between mb-2 flex-wrap gap-2">
                   <div className="flex items-center gap-3">
-                    <div className={`w-9 h-9 bg-gradient-to-br ${resolver.color} rounded-lg flex items-center justify-center`}>
+                    <div className={`w-9 h-9 bg-gradient-to-br ${resolver.color} rounded-lg flex items-center justify-center shadow`}>
                       <Server className="w-5 h-5 text-white" />
                     </div>
                     <div>
-                      <span className="text-white font-medium">{resolver.name}</span>
-                      <span className="text-xs px-2 py-0.5 rounded-full bg-slate-700/50 text-slate-400 ml-2">{resolver.type}</span>
+                      <span className="text-primary font-medium">{resolver.name}</span>
+                      <span className="text-xs px-2 py-0.5 rounded-full inner-card text-secondary ml-2">{resolver.type}</span>
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
-                    <code className="text-cyan-400 font-mono text-sm">{resolver.ip}</code>
-                    <button onClick={() => copyToClipboardHandler(resolver.ip, `srv-${resolver.ip}`)} className="p-1 rounded hover:bg-slate-700/50">
-                      {copied === `srv-${resolver.ip}` ? <Check className="w-3.5 h-3.5 text-green-400" /> : <Copy className="w-3.5 h-3.5 text-slate-500" />}
+                    <code className="text-[var(--accent-cyan)] font-mono text-sm">{resolver.ip}</code>
+                    <button onClick={() => copyToClipboardHandler(resolver.ip, `srv-${resolver.ip}`)} className="p-1 rounded hover:bg-[var(--bg-input)]">
+                      {copied === `srv-${resolver.ip}` ? <Check className="w-3.5 h-3.5 text-[var(--accent-green)]" /> : <Copy className="w-3.5 h-3.5 text-tertiary" />}
                     </button>
                   </div>
                 </div>
-                <div className="ml-12 flex items-center gap-4 text-xs text-slate-500">
+                <div className="ml-12 flex items-center gap-4 text-xs text-tertiary flex-wrap">
                   <span className="flex items-center gap-1"><MapPin className="w-3 h-3" />{resolver.location}</span>
-                  <div className="flex gap-1">
+                  <div className="flex flex-wrap gap-1">
                     {resolver.features.map(f => (
-                      <span key={f} className="px-1.5 py-0.5 rounded bg-slate-700/50 text-slate-400">{f}</span>
+                      <span key={f} className="px-1.5 py-0.5 rounded inner-card text-secondary">{f}</span>
                     ))}
                   </div>
                 </div>
                 <div className="ml-12 mt-2">
-                  <p className="text-xs text-slate-600 font-mono truncate">DoH: {resolver.dohUrl}</p>
+                  <p className="text-xs text-tertiary font-mono truncate">DoH: {resolver.dohUrl}</p>
                 </div>
               </motion.div>
             ))}
@@ -495,9 +495,9 @@ export default function DNSSection() {
         {/* ── 防护建议 ── */}
         {activeTab === 'protection' && (
           <motion.div key="protection" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="space-y-4">
-            <div className="bg-slate-800/30 rounded-xl p-5 border border-slate-700/50">
-              <h3 className="text-white font-medium mb-4 flex items-center gap-2">
-                <Zap className="w-5 h-5 text-yellow-400" />
+            <div className="glass-card p-5">
+              <h3 className="text-primary font-medium mb-4 flex items-center gap-2">
+                <Zap className="w-5 h-5 text-[var(--accent-yellow)]" />
                 如何防止 DNS 泄漏
               </h3>
               <div className="space-y-3">
@@ -509,43 +509,38 @@ export default function DNSSection() {
                   { title: '配置防火墙规则', desc: '阻止 53 端口（DNS）的出站流量，强制所有 DNS 查询走 VPN 隧道', level: 'medium' },
                   { title: '使用 DNSCrypt', desc: '通过 DNSCrypt 协议加密和认证 DNS 查询，比 DoH 更安全', level: 'low' },
                 ].map((item, i) => (
-                  <div key={i} className={`flex items-start gap-3 p-3 rounded-lg border ${
-                    item.level === 'high' ? 'bg-red-500/5 border-red-500/20' :
-                    item.level === 'medium' ? 'bg-yellow-500/5 border-yellow-500/20' :
-                    'bg-blue-500/5 border-blue-500/20'
+                  <div key={i} className={`flex items-start gap-3 p-3 rounded-xl border ${
+                    item.level === 'high' ? 'bg-[var(--accent-red)]/5 border-[var(--accent-red)]/20' :
+                    item.level === 'medium' ? 'bg-[var(--accent-yellow)]/5 border-[var(--accent-yellow)]/20' :
+                    'bg-[var(--accent-blue)]/5 border-[var(--accent-blue)]/20'
                   }`}>
                     <span className={`w-2 h-2 rounded-full mt-1.5 shrink-0 ${
-                      item.level === 'high' ? 'bg-red-400' :
-                      item.level === 'medium' ? 'bg-yellow-400' : 'bg-blue-400'
+                      item.level === 'high' ? 'bg-[var(--accent-red)]' :
+                      item.level === 'medium' ? 'bg-[var(--accent-yellow)]' : 'bg-[var(--accent-blue)]'
                     }`} />
                     <div>
-                      <h4 className="text-white font-medium text-sm">{item.title}</h4>
-                      <p className="text-slate-400 text-xs mt-1">{item.desc}</p>
+                      <h4 className="text-primary font-medium text-sm">{item.title}</h4>
+                      <p className="text-secondary text-xs mt-1">{item.desc}</p>
                     </div>
                   </div>
                 ))}
               </div>
             </div>
 
-            <div className="bg-purple-500/10 rounded-xl p-4 border border-purple-500/30">
-              <h4 className="text-purple-400 font-medium mb-2">推荐 DNS 配置</h4>
+            <div className="glass-card p-4 !border-l-4 !border-l-[var(--accent-purple)]">
+              <h4 className="text-[var(--accent-purple)] font-medium mb-3">推荐 DNS 配置</h4>
               <div className="space-y-2 text-sm">
-                <div className="flex items-center justify-between p-2 bg-slate-900/50 rounded-lg">
-                  <span className="text-slate-400">主 DNS (Cloudflare)</span>
-                  <code className="text-cyan-400 font-mono">1.1.1.1 / 1.0.0.1</code>
-                </div>
-                <div className="flex items-center justify-between p-2 bg-slate-900/50 rounded-lg">
-                  <span className="text-slate-400">备 DNS (Google)</span>
-                  <code className="text-cyan-400 font-mono">8.8.8.8 / 8.8.4.4</code>
-                </div>
-                <div className="flex items-center justify-between p-2 bg-slate-900/50 rounded-lg">
-                  <span className="text-slate-400">国内 DNS (阿里)</span>
-                  <code className="text-cyan-400 font-mono">223.5.5.5 / 223.6.6.6</code>
-                </div>
-                <div className="flex items-center justify-between p-2 bg-slate-900/50 rounded-lg">
-                  <span className="text-slate-400">DoH 端点</span>
-                  <code className="text-cyan-400 font-mono text-xs">https://cloudflare-dns.com/dns-query</code>
-                </div>
+                {[
+                  { label: '主 DNS (Cloudflare)', value: '1.1.1.1 / 1.0.0.1' },
+                  { label: '备 DNS (Google)',     value: '8.8.8.8 / 8.8.4.4' },
+                  { label: '国内 DNS (阿里)',     value: '223.5.5.5 / 223.6.6.6' },
+                  { label: 'DoH 端点',            value: 'https://cloudflare-dns.com/dns-query' },
+                ].map(row => (
+                  <div key={row.label} className="flex items-center justify-between p-2.5 inner-card flex-wrap gap-2">
+                    <span className="text-secondary">{row.label}</span>
+                    <code className="text-[var(--accent-cyan)] font-mono text-xs">{row.value}</code>
+                  </div>
+                ))}
               </div>
             </div>
           </motion.div>

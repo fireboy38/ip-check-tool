@@ -1,7 +1,7 @@
 import React from 'react';
 import { Routes, Route, NavLink } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Globe, Activity, Shield, Server, Zap, Wrench, Sun, Moon } from 'lucide-react';
+import { Globe, Activity, Shield, Server, Zap, Wrench, Sun, Moon, Github } from 'lucide-react';
 import { useTheme } from './hooks/useTheme';
 import Home from './pages/Home';
 import ConnectivityTest from './components/ConnectivityTest';
@@ -11,12 +11,12 @@ import SpeedTestSection from './components/SpeedTestSection';
 import ToolsPage from './pages/ToolsPage';
 
 const navItems = [
-  { path: '/', icon: Globe, label: 'IP信息' },
-  { path: '/connectivity', icon: Activity, label: '网络连通性' },
-  { path: '/webrtc', icon: Shield, label: 'WebRTC测试' },
-  { path: '/dns', icon: Server, label: 'DNS泄漏测试' },
-  { path: '/speed', icon: Zap, label: '网速测试' },
-  { path: '/tools', icon: Wrench, label: '高级工具' },
+  { path: '/', icon: Globe, label: 'IP 信息', desc: '国内 / 海外 / 谷歌 IP' },
+  { path: '/connectivity', icon: Activity, label: '网络连通性', desc: 'TCPing 多节点' },
+  { path: '/webrtc', icon: Shield, label: 'WebRTC 测试', desc: '泄漏检测' },
+  { path: '/dns', icon: Server, label: 'DNS 泄漏', desc: 'DoH 真实查询' },
+  { path: '/speed', icon: Zap, label: '网速测试', desc: '下载 / 上传 / 延迟' },
+  { path: '/tools', icon: Wrench, label: '高级工具', desc: '浏览器指纹' },
 ];
 
 function App() {
@@ -24,54 +24,96 @@ function App() {
   const isDark = theme === 'dark';
 
   return (
-    <div className={`min-h-screen ${isDark ? 'bg-[#0a0f1c] text-white' : 'bg-gray-50 text-gray-900'}`}>
-      <header className={`sticky top-0 z-50 border-b ${isDark ? 'bg-[#0f172a]/95 border-slate-800' : 'bg-white/95 border-gray-200'} backdrop-blur-md`}>
-        <div className="max-w-7xl mx-auto px-4 py-3">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-cyan-400 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/20">
+    <div className="min-h-screen flex flex-col text-primary">
+      {/* Decorative floating blobs */}
+      <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
+        <div
+          className="absolute -top-32 -left-24 w-[28rem] h-[28rem] rounded-full opacity-40 blur-3xl"
+          style={{ background: 'radial-gradient(circle, rgba(59,130,246,0.45) 0%, transparent 70%)' }}
+        />
+        <div
+          className="absolute top-1/3 -right-32 w-[32rem] h-[32rem] rounded-full opacity-30 blur-3xl animate-float"
+          style={{ background: 'radial-gradient(circle, rgba(6,182,212,0.4) 0%, transparent 70%)' }}
+        />
+        <div
+          className="absolute bottom-0 left-1/4 w-[26rem] h-[26rem] rounded-full opacity-25 blur-3xl"
+          style={{ background: 'radial-gradient(circle, rgba(139,92,246,0.35) 0%, transparent 70%)' }}
+        />
+      </div>
+
+      {/* ─────────── Header ─────────── */}
+      <header className="sticky top-0 z-50 glass-panel border-b border-soft">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3">
+          <div className="flex items-center justify-between gap-4">
+            {/* Logo */}
+            <motion.div
+              initial={{ opacity: 0, x: -16 }}
+              animate={{ opacity: 1, x: 0 }}
+              className="flex items-center gap-3 min-w-0"
+            >
+              <div className="relative w-11 h-11 rounded-2xl bg-gradient-brand flex items-center justify-center shadow-glow-blue shrink-0">
                 <Globe className="w-6 h-6 text-white" />
+                <span className="absolute -top-1 -right-1 w-3 h-3 rounded-full bg-emerald-400 ring-2 ring-[var(--bg-app)]">
+                  <span className="absolute inset-0 rounded-full bg-emerald-400 animate-ping opacity-75" />
+                </span>
               </div>
-              <div>
-                <h1 className="text-xl font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
+              <div className="min-w-0">
+                <h1 className="text-lg sm:text-xl font-extrabold tracking-tight text-gradient-brand truncate">
                   IP.SCXS.VIP
                 </h1>
-                <p className="text-xs text-slate-500">四川新数 IP 工具箱</p>
+                <p className="text-[11px] text-tertiary truncate">四川新数 · 网络诊断工具箱</p>
               </div>
-            </div>
+            </motion.div>
 
-            <button
+            {/* Theme toggle */}
+            <motion.button
               onClick={toggleTheme}
-              className={`p-2.5 rounded-xl transition-all ${isDark ? 'bg-slate-800 hover:bg-slate-700 text-slate-300' : 'bg-gray-100 hover:bg-gray-200 text-gray-600'}`}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="relative p-2.5 rounded-xl glass-panel border border-soft hover:border-strong transition-all"
+              aria-label="切换主题"
             >
-              {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-            </button>
+              <motion.span
+                key={theme}
+                initial={{ rotate: -90, opacity: 0, scale: 0.5 }}
+                animate={{ rotate: 0, opacity: 1, scale: 1 }}
+                transition={{ duration: 0.3 }}
+                className="block"
+              >
+                {isDark ? (
+                  <Sun className="w-5 h-5 text-amber-400" />
+                ) : (
+                  <Moon className="w-5 h-5 text-indigo-600" />
+                )}
+              </motion.span>
+            </motion.button>
           </div>
 
-          <nav className="flex items-center gap-1 mt-4 overflow-x-auto pb-1">
+          {/* Nav */}
+          <nav className="flex items-center gap-1 mt-3 overflow-x-auto pb-1 -mx-1 px-1 scrollbar-thin">
             {navItems.map((item) => (
               <NavLink
                 key={item.path}
                 to={item.path}
+                end={item.path === '/'}
                 className={({ isActive }) =>
-                  `flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium whitespace-nowrap transition-all ${
+                  `group relative flex items-center gap-2 px-3.5 sm:px-4 py-2 rounded-xl text-sm font-medium whitespace-nowrap transition-all ${
                     isActive
-                      ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/25'
-                      : isDark
-                      ? 'text-slate-400 hover:text-white hover:bg-slate-800'
-                      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                      ? 'bg-gradient-brand text-white shadow-glow-blue'
+                      : 'text-secondary hover:text-primary hover:bg-[var(--bg-input)]'
                   }`
                 }
               >
-                <item.icon className="w-4 h-4" />
-                {item.label}
+                <item.icon className="w-4 h-4 shrink-0" />
+                <span>{item.label}</span>
               </NavLink>
             ))}
           </nav>
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-4 py-6">
+      {/* ─────────── Main ─────────── */}
+      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-6 sm:py-8">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/connectivity" element={<ConnectivityTest />} />
@@ -82,26 +124,43 @@ function App() {
         </Routes>
       </main>
 
-      <footer className={`border-t mt-12 py-6 ${isDark ? 'bg-[#0f172a] border-slate-800' : 'bg-white border-gray-200'}`}>
-        <div className="max-w-7xl mx-auto px-4 text-center text-sm text-slate-500">
-          <p className="flex items-center justify-center gap-2">
-            <span>四川新数 IP 工具箱</span>
-            <span className="opacity-40">|</span>
-            <a
-              href="https://github.com/fireboy38/ip-check-tool"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 hover:text-blue-400 transition-colors"
-            >
-              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
-              GitHub
-            </a>
-          </p>
-          <p className="mt-2 text-xs opacity-60">
-            <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer" className="hover:text-blue-400 transition-colors">蜀ICP备20007839号</a>
-            <span className="mx-2 opacity-40">|</span>
-            © {new Date().getFullYear()} 四川新数
-          </p>
+      {/* ─────────── Footer ─────────── */}
+      <footer className="border-t border-soft glass-panel mt-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-lg bg-gradient-brand flex items-center justify-center">
+                <Globe className="w-4 h-4 text-white" />
+              </div>
+              <div className="text-sm">
+                <p className="font-semibold text-primary">四川新数 IP 工具箱</p>
+                <p className="text-xs text-tertiary">所有检测在浏览器本地完成 · 不上传任何数据</p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-4 text-xs text-tertiary">
+              <a
+                href="https://github.com/fireboy38/ip-check-tool"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-1.5 hover:text-primary transition-colors"
+              >
+                <Github className="w-4 h-4" />
+                <span>GitHub</span>
+              </a>
+              <span className="opacity-40">·</span>
+              <a
+                href="https://beian.miit.gov.cn/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-primary transition-colors"
+              >
+                蜀ICP备20007839号
+              </a>
+              <span className="opacity-40">·</span>
+              <span>© {new Date().getFullYear()} 四川新数</span>
+            </div>
+          </div>
         </div>
       </footer>
     </div>

@@ -427,12 +427,12 @@ const INITIAL_RESULTS: IPSourceResult[] = [
 
 function DetailCard({ icon: Icon, label, value }: { icon: React.ElementType; label: string; value?: string }) {
   return (
-    <div className="bg-slate-900/50 rounded-xl p-4 border border-slate-700/30">
+    <div className="inner-card p-4">
       <div className="flex items-center gap-2 mb-2">
-        <Icon className="w-4 h-4 text-blue-400" />
-        <span className="text-slate-400 text-sm">{label}</span>
+        <Icon className="w-4 h-4 text-[var(--accent-blue)]" />
+        <span className="text-secondary text-sm">{label}</span>
       </div>
-      <p className="text-white font-semibold truncate">{value || '-'}</p>
+      <p className="text-primary font-semibold truncate font-mono text-sm">{value || '-'}</p>
     </div>
   );
 }
@@ -484,123 +484,136 @@ export default function IPInfoSection() {
   };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       {/* 标题 */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="text-center"
+        className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3"
       >
-        <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">
-          全方位查询您的IP地址
-        </h1>
-        <p className="text-slate-400">从中国、国外、谷歌三个维度检测您的IP</p>
+        <div>
+          <div className="flex items-center gap-2 mb-2">
+            <span className="chip"><Globe className="w-3 h-3" />IP 检测</span>
+          </div>
+          <h2 className="text-2xl sm:text-3xl font-bold text-primary">
+            全方位查询您的 <span className="text-gradient-cool">IP 地址</span>
+          </h2>
+          <p className="text-secondary text-sm mt-1.5">从国内、海外、谷歌三个维度检测您的 IP，支持 IPv4 与 IPv6</p>
+        </div>
       </motion.div>
 
       {/* 三个 IP 检测卡片 */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {results.map((result, index) => (
-          <motion.div
-            key={result.id}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.1 }}
-            onClick={() => result.status === 'success' && setSelectedIP(result)}
-            className={`relative overflow-hidden rounded-2xl border-2 transition-all cursor-pointer ${
-              selectedIP?.id === result.id
-                ? `${result.borderColor} ${result.bgColor} ring-2 ring-offset-2 ring-offset-slate-900 ${result.borderColor.replace('/30', '/50')}`
-                : 'border-slate-700/50 bg-slate-800/50 hover:border-slate-600'
-            }`}
-          >
-            {/* 顶部渐变条 */}
-            <div className={`h-1.5 bg-gradient-to-r ${result.color}`} />
+        {results.map((result, index) => {
+          const isSelected = selectedIP?.id === result.id;
+          return (
+            <motion.div
+              key={result.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.1, ease: [0.16, 1, 0.3, 1] }}
+              onClick={() => result.status === 'success' && setSelectedIP(result)}
+              className={`relative overflow-hidden rounded-2xl glass-card group cursor-pointer ${
+                isSelected ? 'ring-2 ring-[var(--accent-blue)]' : ''
+              } ${result.status === 'success' ? 'hover:shadow-glow-blue' : ''}`}
+            >
+              {/* 顶部渐变条 */}
+              <div className={`h-1.5 bg-gradient-to-r ${result.color}`} />
 
-            <div className="p-5">
-              {/* 标题行 */}
-              <div className="flex items-center gap-3 mb-4">
-                <span className="text-2xl">{result.icon}</span>
-                <div>
-                  <h3 className="text-white font-semibold text-lg">{result.name}</h3>
-                  <p className="text-slate-400 text-xs">{result.desc}</p>
-                </div>
-              </div>
+              {/* Decorative blob */}
+              <div className={`pointer-events-none absolute -top-10 -right-10 w-32 h-32 rounded-full opacity-20 blur-2xl bg-gradient-to-br ${result.color}`} />
 
-              {/* IP 地址 */}
-              <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <span className="text-slate-400 text-sm">IPv4 地址</span>
-                  {result.status === 'success' && (
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        copyToClipboardHandler(result.ip, result.id);
-                      }}
-                      className="p-1.5 rounded-lg hover:bg-slate-700/50 transition-colors"
-                    >
-                      {copied === result.id ? (
-                        <Check className="w-4 h-4 text-green-400" />
-                      ) : (
-                        <Copy className="w-4 h-4 text-slate-400" />
-                      )}
-                    </button>
-                  )}
+              <div className="relative p-5">
+                {/* 标题行 */}
+                <div className="flex items-start gap-3 mb-5">
+                  <div className={`shrink-0 w-11 h-11 rounded-xl bg-gradient-to-br ${result.color} flex items-center justify-center text-xl shadow-lg`}>
+                    <span>{result.icon}</span>
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <h3 className="text-primary font-semibold text-base">{result.name}</h3>
+                    <p className="text-tertiary text-xs mt-0.5 leading-snug">{result.desc}</p>
+                  </div>
                 </div>
 
-                <code className={`block text-xl font-mono font-bold truncate ${
-                  result.status === 'success' ? result.textColor :
-                  result.status === 'error' ? 'text-red-400' : 'text-yellow-400'
-                }`}>
-                  {result.ip}
-                </code>
-
-                {/* IPv6 地址 */}
-                {result.status === 'success' && result.ipv6 && (
-                  <div className="space-y-1">
-                    <div className="flex items-center justify-between">
-                      <span className="text-slate-400 text-sm">IPv6 地址</span>
+                {/* IP 地址 */}
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-tertiary text-[11px] font-semibold uppercase tracking-wider">IPv4 地址</span>
+                    {result.status === 'success' && (
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
-                          copyToClipboardHandler(result.ipv6!, `${result.id}-v6`);
+                          copyToClipboardHandler(result.ip, result.id);
                         }}
-                        className="p-1.5 rounded-lg hover:bg-slate-700/50 transition-colors"
+                        className="p-1.5 rounded-lg hover:bg-[var(--bg-input)] transition-colors"
+                        aria-label="复制 IPv4"
                       >
-                        {copied === `${result.id}-v6` ? (
-                          <Check className="w-4 h-4 text-green-400" />
+                        {copied === result.id ? (
+                          <Check className="w-4 h-4 text-[var(--accent-green)]" />
                         ) : (
-                          <Copy className="w-4 h-4 text-slate-400" />
+                          <Copy className="w-4 h-4 text-tertiary" />
                         )}
                       </button>
+                    )}
+                  </div>
+
+                  <code className={`block text-xl font-mono font-bold truncate ${
+                    result.status === 'success' ? result.textColor :
+                    result.status === 'error' ? 'text-[var(--accent-red)]' : 'text-[var(--accent-yellow)]'
+                  }`}>
+                    {result.ip}
+                  </code>
+
+                  {/* IPv6 地址 */}
+                  {result.status === 'success' && result.ipv6 && (
+                    <div className="space-y-1 pt-1">
+                      <div className="flex items-center justify-between">
+                        <span className="text-tertiary text-[11px] font-semibold uppercase tracking-wider">IPv6 地址</span>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            copyToClipboardHandler(result.ipv6!, `${result.id}-v6`);
+                          }}
+                          className="p-1.5 rounded-lg hover:bg-[var(--bg-input)] transition-colors"
+                          aria-label="复制 IPv6"
+                        >
+                          {copied === `${result.id}-v6` ? (
+                            <Check className="w-4 h-4 text-[var(--accent-green)]" />
+                          ) : (
+                            <Copy className="w-4 h-4 text-tertiary" />
+                          )}
+                        </button>
+                      </div>
+                      <code className={`block text-sm font-mono truncate ${result.textColor} opacity-80`}>
+                        {result.ipv6}
+                      </code>
                     </div>
-                    <code className={`block text-sm font-mono truncate ${result.textColor} opacity-80`}>
-                      {result.ipv6}
-                    </code>
-                  </div>
-                )}
+                  )}
 
-                {/* 位置信息 */}
-                {result.status === 'success' && (
-                  <div className="flex items-center gap-2 text-sm text-slate-400">
-                    <MapPin className="w-4 h-4" />
-                    <span>{result.location}</span>
-                  </div>
-                )}
+                  {/* 位置信息 */}
+                  {result.status === 'success' && (
+                    <div className="flex items-center gap-2 text-sm text-secondary pt-1">
+                      <MapPin className="w-4 h-4 text-[var(--accent-blue)]" />
+                      <span className="truncate">{result.location}</span>
+                    </div>
+                  )}
 
-                {/* 状态指示 */}
-                <div className="flex items-center gap-2">
-                  <span className={`w-2 h-2 rounded-full ${
-                    result.status === 'success' ? 'bg-green-400' :
-                    result.status === 'error' ? 'bg-red-400' : 'bg-yellow-400 animate-pulse'
-                  }`} />
-                  <span className="text-xs text-slate-500">
-                    {result.status === 'success' ? '检测成功' :
-                     result.status === 'error' ? '检测失败' : '检测中...'}
-                  </span>
+                  {/* 状态指示 */}
+                  <div className="flex items-center gap-2 pt-1">
+                    <span className={`w-2 h-2 rounded-full ${
+                      result.status === 'success' ? 'bg-[var(--accent-green)]' :
+                      result.status === 'error' ? 'bg-[var(--accent-red)]' : 'bg-[var(--accent-yellow)] animate-pulse'
+                    }`} />
+                    <span className="text-xs text-tertiary">
+                      {result.status === 'success' ? '检测成功' :
+                       result.status === 'error' ? '检测失败' : '检测中...'}
+                    </span>
+                  </div>
                 </div>
               </div>
-            </div>
-          </motion.div>
-        ))}
+            </motion.div>
+          );
+        })}
       </div>
 
       {/* 选中的 IP 详情 */}
@@ -608,19 +621,21 @@ export default function IPInfoSection() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-slate-800/50 rounded-2xl p-6 border border-slate-700/50"
+          className="glass-card p-6"
         >
-          <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center justify-between mb-5 flex-wrap gap-3">
             <div className="flex items-center gap-3">
-              <span className="text-2xl">{selectedIP.icon}</span>
+              <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${selectedIP.color} flex items-center justify-center text-2xl shadow-lg`}>
+                <span>{selectedIP.icon}</span>
+              </div>
               <div>
-                <h3 className="text-white font-semibold">{selectedIP.name} 详情</h3>
-                <p className="text-slate-400 text-sm">{selectedIP.ip}</p>
+                <h3 className="text-primary font-semibold text-lg">{selectedIP.name} 详情</h3>
+                <p className="text-secondary text-sm font-mono">{selectedIP.ip}</p>
               </div>
             </div>
             <button
               onClick={loadAllIPs}
-              className="flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-500 hover:bg-blue-600 transition-colors text-sm"
+              className="btn-primary flex items-center gap-2 text-sm"
             >
               <RefreshCw className="w-4 h-4" />
               重新检测
@@ -640,49 +655,50 @@ export default function IPInfoSection() {
           )}
 
           {/* 外部链接 */}
-          <div className="flex flex-wrap gap-3 mt-6 pt-4 border-t border-slate-700/50">
-            <a
-              href={`https://www.ipshudi.com/${selectedIP.ip}.htm`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700/50 transition-colors text-sm text-slate-300"
-            >
-              <ExternalLink className="w-4 h-4" />
-              IP 归属地查询
-            </a>
-            <a
-              href={`https://ip.sb/whois/${selectedIP.ip}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700/50 transition-colors text-sm text-slate-300"
-            >
-              <ExternalLink className="w-4 h-4" />
-              Whois 查询
-            </a>
-            <a
-              href={`https://ip.sb/ip/${selectedIP.ip}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700/50 transition-colors text-sm text-slate-300"
-            >
-              <ExternalLink className="w-4 h-4" />
-              IP 信息查询
-            </a>
+          <div className="flex flex-wrap gap-2.5 mt-6 pt-5 border-t border-soft">
+            {[
+              { href: `https://www.ipshudi.com/${selectedIP.ip}.htm`, label: 'IP 归属地查询' },
+              { href: `https://ip.sb/whois/${selectedIP.ip}`,         label: 'Whois 查询' },
+              { href: `https://ip.sb/ip/${selectedIP.ip}`,             label: 'IP 信息查询' },
+            ].map((link) => (
+              <a
+                key={link.label}
+                href={link.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 px-3.5 py-2 rounded-xl glass-panel border border-soft hover:border-strong hover:text-primary text-sm text-secondary transition-all"
+              >
+                <ExternalLink className="w-3.5 h-3.5" />
+                {link.label}
+              </a>
+            ))}
           </div>
         </motion.div>
       )}
 
       {/* 说明 */}
-      <div className="bg-slate-800/30 rounded-xl p-4 border border-slate-700/50">
-        <h4 className="text-white font-medium mb-2 flex items-center gap-2">
-          <Shield className="w-4 h-4 text-blue-400" />
+      <div className="glass-card p-5">
+        <h4 className="text-primary font-medium mb-3 flex items-center gap-2">
+          <Shield className="w-4 h-4 text-[var(--accent-blue)]" />
           检测说明
         </h4>
-        <ul className="text-slate-400 text-sm space-y-1 list-disc list-inside">
-          <li><span className="text-red-400">国内 IP</span>：优先通过中国 IP 服务检测（需服务支持 CORS），降级时可能和国外 IP 相同</li>
-          <li><span className="text-blue-400">国外 IP</span>：通过海外 IP 服务检测（代理分流下走代理线路）</li>
-          <li><span className="text-green-400">谷歌 IP</span>：通过 Google DNS-over-HTTPS 探测出口 IP</li>
-          <li>如果使用了分流代理（如 Clash/V2Ray），国内和国外 IP 可能不同；直连网络下三者通常相同</li>
+        <ul className="text-secondary text-sm space-y-1.5">
+          <li className="flex gap-2">
+            <span className="text-[var(--accent-red)] shrink-0">·</span>
+            <span><span className="text-[var(--accent-red)] font-medium">国内 IP</span>：优先通过中国 IP 服务检测（需服务支持 CORS），降级时可能和国外 IP 相同</span>
+          </li>
+          <li className="flex gap-2">
+            <span className="text-[var(--accent-blue)] shrink-0">·</span>
+            <span><span className="text-[var(--accent-blue)] font-medium">国外 IP</span>：通过海外 IP 服务检测（代理分流下走代理线路）</span>
+          </li>
+          <li className="flex gap-2">
+            <span className="text-[var(--accent-green)] shrink-0">·</span>
+            <span><span className="text-[var(--accent-green)] font-medium">谷歌 IP</span>：通过 Google DNS-over-HTTPS 探测出口 IP</span>
+          </li>
+          <li className="flex gap-2">
+            <span className="text-tertiary shrink-0">·</span>
+            <span>如果使用了分流代理（如 Clash/V2Ray），国内和国外 IP 可能不同；直连网络下三者通常相同</span>
+          </li>
         </ul>
       </div>
     </div>

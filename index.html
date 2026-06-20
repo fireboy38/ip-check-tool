@@ -1,51 +1,80 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" class="dark">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>四川新数 IP 工具箱 - IP.SCXS.VIP</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#070b16">
+  <meta name="description" content="四川新数 IP 工具箱 — 一站式网络诊断与隐私检测：IP 地址、网络连通性、WebRTC 泄漏、DNS 泄漏、网速测试、浏览器指纹。">
+  <title>四川新数 IP 工具箱 · IP.SCXS.VIP</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/fonts/font-awesome/css/all.min.css">
   <style>
-    /* 内联样式确保主题色立即生效，避免闪烁 */
+    /* Inline styles to prevent theme flash before React mounts */
     html, body {
       margin: 0;
       padding: 0;
       width: 100%;
-      height: 100%;
+      min-height: 100%;
+      background-color: #070b16;
     }
     html.light, html.light body {
-      background-color: #ffffff !important;
-      color: #000000;
+      background-color: #f4f6fb !important;
+      color: #0f172a;
     }
     html.dark, html.dark body {
-      background-color: #1a1a1a !important;
-      color: #ffffff;
+      background-color: #070b16 !important;
+      color: #f1f5f9;
+    }
+    /* Loading skeleton shown until React mounts */
+    #root:empty::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      width: 56px;
+      height: 56px;
+      margin: auto;
+      border-radius: 50%;
+      border: 3px solid rgba(59, 130, 246, 0.18);
+      border-top-color: #3b82f6;
+      animation: boot-spin 0.9s linear infinite;
+    }
+    @keyframes boot-spin {
+      to { transform: rotate(360deg); }
     }
   </style>
   <script>
-    // 在 React 加载前立即设置主题，避免闪烁
+    // Apply theme before React mounts to prevent FOUC
     (function() {
-      const isInIframe = window.self !== window.top;
-
       function applyThemeToDOM(theme) {
         document.documentElement.classList.remove('light', 'dark');
         document.documentElement.classList.add(theme);
         document.documentElement.setAttribute('data-theme', theme);
+        const meta = document.querySelector('meta[name="theme-color"]');
+        if (meta) meta.setAttribute('content', theme === 'light' ? '#f4f6fb' : '#070b16');
       }
 
+      const isInIframe = window.self !== window.top;
+
       if (isInIframe) {
-        // 监听父窗口主动推送的主题消息
         window.addEventListener('message', function(event) {
           if (event.data && typeof event.data.theme === 'string') {
             const theme = event.data.theme;
             if (theme === 'light' || theme === 'dark') {
               applyThemeToDOM(theme);
+              try { localStorage.setItem('theme', theme); } catch (e) {}
             }
           }
         });
-      } else {
-        // 非 iframe 环境，使用默认 light 主题
-        applyThemeToDOM('light');
+      }
+
+      // Restore saved theme (default: dark)
+      try {
+        const saved = localStorage.getItem('theme');
+        applyThemeToDOM(saved === 'light' ? 'light' : 'dark');
+      } catch (e) {
+        applyThemeToDOM('dark');
       }
     })();
   </script>
