@@ -111,4 +111,3 @@ skills/
 # EdgeOne Pages
 .edgeone/
 .env
-wrangler.jsonc
