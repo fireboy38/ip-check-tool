@@ -107,3 +107,8 @@ skills/
 .stats
 .config
 .accesslog
+
+# EdgeOne Pages
+.edgeone/
+.env
+wrangler.jsonc
